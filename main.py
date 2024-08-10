@@ -1,8 +1,9 @@
+import sys
+
 def checkArguments() :
     # Current version requres at least two arguments
     argumentValues = 2
 
-    import sys
     if (len(sys.argv) > argumentValues) :
         sys.stderr.write("You can't use more than " + str(argumentValues) +  " arguments")
         sys.exit(-1)
@@ -12,13 +13,42 @@ def checkArguments() :
 
 
 def printString() :
-    import sys
-    print(sys.argv[1])
+    stringLength = len(str(sys.argv[1]))
+    print("             /-", end='')
+    
+    if (stringLength < 10):
+        for(x) in range(10):
+            print("-", end='')
+    else:
+        for x in range(stringLength):
+            print("-", end='')
+    
+    print("-\\")
+
+    if (stringLength < 10):
+        print("             | " + sys.argv[1], end='')
+        for(x) in range(10 - stringLength):
+            print(" ", end='')
+        print(" |")
+    else:
+        # Add logic for longer strings that have to be divided
+        print("             | " + sys.argv[1] + " |")
+    
+    print("             \\-", end='')
+
+    if(stringLength < 10):
+        for(x) in range(10):
+            print("-", end='')
+    else:
+        for x in range(stringLength):
+            print("-", end='')
+
+    print("-/")
 
 
 def printParrot() :
-    print("                           .");             
-    print("                          | \\/|");
+    print("                  \\  /     .");             
+    print("                   \\/     | \\/|");
     print("  (\\   _                  ) )|/|");                     
     print("      (/            _----. /.'.'");
     print(".-._________..      .' @ _\\  .'");

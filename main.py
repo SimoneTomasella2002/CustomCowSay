@@ -1,5 +1,25 @@
 import sys
 
+# Functions
+
+def getStringLines(userString) :
+    lines = []
+    maxLineLength = 50 if len(userString) >= 50 else len(userString) 
+
+    numberOfLines = int(len(userString) / 50)
+
+    # Getting n-1 lines
+    for x in range(numberOfLines+1):
+        line = userString[50*x:50*(x+1)]
+        if (x == numberOfLines):
+            lines.append(f"{line}{" " * (maxLineLength - len(line))}") # Last line
+        else:
+            lines.append(line)
+
+    return lines
+
+# Main flow functions
+
 def checkArguments() :
     # Current version requres at least two arguments
     argumentValues = 2
@@ -15,22 +35,20 @@ def checkArguments() :
 def printString() :
     userString = sys.argv[1]
     stringLength = len(str(userString))
-    # Used in final line generation
-    maxLineLength = 50 if stringLength >= 50 else stringLength 
     
     # Prints upper part of the balloon
     
     print("             /-", end='')
     
     if (stringLength < 10):     # If string is too short
-        for(x) in range(10):
+        for _ in range(10):
             print("-", end='')
     else:
         if(stringLength < 50):
-            for x in range(stringLength):
+            for _ in range(stringLength):
                 print("-", end='')
         else:
-            for x in range(50):
+            for _ in range(50):
                 print("-", end='')
 
     print("-\\")
@@ -40,36 +58,29 @@ def printString() :
 
     if (stringLength < 10):     # If string is too short
         print("             | " + userString, end='')
-        for(x) in range(10 - stringLength):
+        for _ in range(10 - stringLength):
             print(" ", end='')
         print(" |")
     else:
-        stringLines = int(len(userString) / 50)
-        
-        for x in range(stringLines+1):
-            subString = userString[50*(x):50*(x+1)]
-            if(x != stringLines):                               # All lines
-                print(f"             | {subString} |\n", end='')
-            else:                                               # Final line (covers also a single input line)
-                print(f"             | {subString}", end='')
-                for y in range(maxLineLength - len(subString)):
-                    print(" ", end='')
-                print(" |")
-        
+        lines = getStringLines(userString)
+
+        for line in lines:
+            print(f"             | {line} |\n", end='')
+
 
     # Prints bottom part of the balloon
 
     print("             \\-", end='')
 
     if(stringLength < 10):      # If string is too short
-        for(x) in range(10):
+        for _ in range(10):
             print("-", end='')
     else:
         if(stringLength < 50):
-            for x in range(stringLength):
+            for _ in range(stringLength):
                 print("-", end='')
         else:
-            for x in range(50):
+            for _ in range(50):
                 print("-", end='')
 
     print("-/")

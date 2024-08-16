@@ -3,6 +3,44 @@ import sys
 # Functions
 
 def getStringLines(userString) :
+    
+    # New implementation
+    lines = []
+    leftPointer = 0
+    rightPointer = 50 if len(userString) >= 50 else len(userString)-1
+
+    while rightPointer < len(userString):
+        
+        #! Da riscrivere, bug con una sola linea
+        temp = rightPointer
+        while userString[rightPointer] != ' ':
+            rightPointer -= 1
+            if rightPointer == leftPointer:
+                rightPointer = temp
+                break
+        
+        print(f"leftPointer = {leftPointer}, rightPointer = {rightPointer}")
+
+        if(leftPointer == 0):
+            lines.append(userString[leftPointer:rightPointer])
+        else:
+            lines.append(userString[leftPointer+1:rightPointer])
+
+        leftPointer = rightPointer
+        rightPointer = rightPointer + 50
+
+        if rightPointer >= len(userString):                                 # Last line check
+            if (leftPointer == 0):                                          # If this is the first line
+                lines.append(userString[leftPointer:len(userString)])
+            else:
+                lines.append(userString[leftPointer+1:len(userString)])     # A blankspace is in leftPointer, so we increment it by 1
+            break
+    
+    return lines
+
+
+    # Old implementation
+    """
     lines = []
     maxLineLength = 50 if len(userString) >= 50 else len(userString) 
 
@@ -17,6 +55,7 @@ def getStringLines(userString) :
             lines.append(line)
 
     return lines
+    """
 
 # Main flow functions
 
@@ -33,56 +72,45 @@ def checkArguments() :
 
 
 def printString() :
+
+    # New implementation
     userString = sys.argv[1]
     stringLength = len(str(userString))
+    lines = getStringLines(userString)
+    maxLineLength = 0
     
+    for line in lines:
+        if len(str(line)) > maxLineLength:
+            maxLineLength = len(str(line))
+
     # Prints upper part of the balloon
-    
     print("             /-", end='')
-    
-    if (stringLength < 10):     # If string is too short
+
+    if stringLength < 10:
         for _ in range(10):
             print("-", end='')
     else:
-        if(stringLength < 50):
-            for _ in range(stringLength):
-                print("-", end='')
-        else:
-            for _ in range(50):
-                print("-", end='')
-
+        for _ in range(maxLineLength):
+            print("-", end='')
+        
     print("-\\")
 
 
-    # Prints string content part of the balloon
-
-    if (stringLength < 10):     # If string is too short
-        print("             | " + userString, end='')
-        for _ in range(10 - stringLength):
-            print(" ", end='')
-        print(" |")
-    else:
-        lines = getStringLines(userString)
-
-        for line in lines:
-            print(f"             | {line} |\n", end='')
+    # Prints content part of the balloon
+    for line in lines:
+        print(f"             | {line}{" " * (maxLineLength-len(str(line)))} |")
 
 
     # Prints bottom part of the balloon
-
     print("             \\-", end='')
 
-    if(stringLength < 10):      # If string is too short
+    if stringLength < 10:
         for _ in range(10):
             print("-", end='')
     else:
-        if(stringLength < 50):
-            for _ in range(stringLength):
-                print("-", end='')
-        else:
-            for _ in range(50):
-                print("-", end='')
-
+        for _ in range(maxLineLength):
+            print("-", end='')
+        
     print("-/")
 
 

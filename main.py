@@ -8,33 +8,37 @@ def getStringLines(userString) :
     lines = []
     leftPointer = 0
     rightPointer = 50 if len(userString) >= 50 else len(userString)-1
+    firstLine = True
 
     while rightPointer < len(userString):
         
         #! Da riscrivere, bug con una sola linea
-        temp = rightPointer
-        while userString[rightPointer] != ' ':
-            rightPointer -= 1
-            if rightPointer == leftPointer:
-                rightPointer = temp
-                break
+        if rightPointer >= 50:
+            temp = rightPointer
+            while userString[rightPointer] != ' ':
+                rightPointer -= 1
+                if rightPointer == leftPointer:
+                    rightPointer = temp
+                    break
         
         print(f"leftPointer = {leftPointer}, rightPointer = {rightPointer}")
-
+        
         if(leftPointer == 0):
-            lines.append(userString[leftPointer:rightPointer])
+            lines.append(userString[leftPointer:rightPointer+1])
         else:
             lines.append(userString[leftPointer+1:rightPointer])
 
         leftPointer = rightPointer
         rightPointer = rightPointer + 50
 
-        if rightPointer >= len(userString):                                 # Last line check
+        if rightPointer >= len(userString) and not firstLine:               # Last line check
             if (leftPointer == 0):                                          # If this is the first line
                 lines.append(userString[leftPointer:len(userString)])
             else:
                 lines.append(userString[leftPointer+1:len(userString)])     # A blankspace is in leftPointer, so we increment it by 1
             break
+
+        firstLine = False
     
     return lines
 
@@ -98,7 +102,10 @@ def printString() :
 
     # Prints content part of the balloon
     for line in lines:
-        print(f"             | {line}{" " * (maxLineLength-len(str(line)))} |")
+        if maxLineLength < 10:
+            print(f"             | {line}{" " * (10 - maxLineLength)} |")
+        else:
+            print(f"             | {line}{" " * (maxLineLength-len(str(line)))} |")
 
 
     # Prints bottom part of the balloon

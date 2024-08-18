@@ -1,65 +1,29 @@
 import sys
+MAX_LINE_LENGTH = 50
+MIN_LINE_LENGTH = 10
 
 # Functions
 
 def getStringLines(userString) :
     
-    # New implementation
     lines = []
-    leftPointer = 0
-    rightPointer = 50 if len(userString) >= 50 else len(userString)-1
-    firstLine = True
+    words = userString.split(" ")
+    currentLine = []
 
-    while rightPointer < len(userString):
-        
-        #! Da riscrivere, bug con una sola linea
-        if rightPointer >= 50:
-            temp = rightPointer
-            while userString[rightPointer] != ' ':
-                rightPointer -= 1
-                if rightPointer == leftPointer:
-                    rightPointer = temp
-                    break
-        
-        print(f"leftPointer = {leftPointer}, rightPointer = {rightPointer}")
-        
-        if(leftPointer == 0):
-            lines.append(userString[leftPointer:rightPointer+1])
-        else:
-            lines.append(userString[leftPointer+1:rightPointer])
+    for word in words:
+        # If currentLine + word exceeds MAX_LINE_LENGTH, then we append currentLine without new word
+        # Second check is needed for edge cases like single words longer than MAX_LINE_LENGTH 
+        if len(" ".join(currentLine) + word) > MAX_LINE_LENGTH and len(word) < MAX_LINE_LENGTH:
+            lines.append(" ".join(currentLine))
+            currentLine.clear()
 
-        leftPointer = rightPointer
-        rightPointer = rightPointer + 50
+        currentLine.append(word)
 
-        if rightPointer >= len(userString) and not firstLine:               # Last line check
-            if (leftPointer == 0):                                          # If this is the first line
-                lines.append(userString[leftPointer:len(userString)])
-            else:
-                lines.append(userString[leftPointer+1:len(userString)])     # A blankspace is in leftPointer, so we increment it by 1
-            break
+    # Last line
+    lines.append(" ".join(currentLine))
 
-        firstLine = False
-    
     return lines
 
-
-    # Old implementation
-    """
-    lines = []
-    maxLineLength = 50 if len(userString) >= 50 else len(userString) 
-
-    numberOfLines = int(len(userString) / 50)
-
-    # Getting n-1 lines
-    for x in range(numberOfLines+1):
-        line = userString[50*x:50*(x+1)]
-        if (x == numberOfLines):
-            lines.append(f"{line}{" " * (maxLineLength - len(line))}") # Last line
-        else:
-            lines.append(line)
-
-    return lines
-    """
 
 # Main flow functions
 
@@ -81,20 +45,20 @@ def printString() :
     userString = sys.argv[1]
     stringLength = len(str(userString))
     lines = getStringLines(userString)
-    maxLineLength = 0
+    maxCurrentLineLength = 0
     
     for line in lines:
-        if len(str(line)) > maxLineLength:
-            maxLineLength = len(str(line))
+        if len(str(line)) > maxCurrentLineLength:
+            maxCurrentLineLength = len(str(line))
 
     # Prints upper part of the balloon
     print("             /-", end='')
 
-    if stringLength < 10:
-        for _ in range(10):
+    if stringLength < MIN_LINE_LENGTH:
+        for _ in range(MIN_LINE_LENGTH):
             print("-", end='')
     else:
-        for _ in range(maxLineLength):
+        for _ in range(maxCurrentLineLength):
             print("-", end='')
         
     print("-\\")
@@ -102,20 +66,20 @@ def printString() :
 
     # Prints content part of the balloon
     for line in lines:
-        if maxLineLength < 10:
-            print(f"             | {line}{" " * (10 - maxLineLength)} |")
+        if maxCurrentLineLength < MIN_LINE_LENGTH:
+            print(f"             | {line}{" " * (MIN_LINE_LENGTH - maxCurrentLineLength)} |")
         else:
-            print(f"             | {line}{" " * (maxLineLength-len(str(line)))} |")
+            print(f"             | {line}{" " * (maxCurrentLineLength-len(str(line)))} |")
 
 
     # Prints bottom part of the balloon
     print("             \\-", end='')
 
-    if stringLength < 10:
-        for _ in range(10):
+    if stringLength < MIN_LINE_LENGTH:
+        for _ in range(MIN_LINE_LENGTH):
             print("-", end='')
     else:
-        for _ in range(maxLineLength):
+        for _ in range(maxCurrentLineLength):
             print("-", end='')
         
     print("-/")

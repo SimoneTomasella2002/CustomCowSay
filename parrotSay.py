@@ -1,6 +1,8 @@
 import sys
+import os
 MAX_LINE_LENGTH = 50
 MIN_LINE_LENGTH = 10
+MAX_ALLOWED_ARGUMENTS = 3
 
 # Functions
 
@@ -29,14 +31,18 @@ def getStringLines(userString) :
 
 def checkArguments() :
     # Current version requres at least two arguments
-    argumentValues = 2
 
-    if (len(sys.argv) > argumentValues) :
-        sys.stderr.write(f"You can't use more than {str(argumentValues)} arguments")
+    if (len(sys.argv) > MAX_ALLOWED_ARGUMENTS) :
+        sys.stderr.write(f"You can't use more than {str(MAX_ALLOWED_ARGUMENTS)} arguments")
         sys.exit(-1)
     if (len(sys.argv) == 1) :
         sys.stderr.write("Write something in the CLI!")
         sys.exit(-1)
+    if (len(sys.argv) == MAX_ALLOWED_ARGUMENTS) :
+        if not os.path.exists(f"./customTxtFolder/{str(sys.argv[2])}"):
+            sys.stderr.write("File does not exist!")
+            sys.exit(-1)
+    
 
 
 def printString() :
@@ -104,12 +110,20 @@ def printParrot() :
     print("                    '-'-'")
 
 
+def printFromTxt(customTxt) :
+    with open(f"./customTxtFolder/{customTxt}", "r") as file:
+        print(file.read())
+
+
 def main() :
     checkArguments()
     printString()
-    printParrot()
+    
+    printParrot() if(len(sys.argv) == 2) else printFromTxt(sys.argv[2])
+
     exit(0)
     
 main()
 
 # Parrot by Morfina on https://www.asciiart.eu/animals/birds-land
+# Horse by Veronica Karlsson on https://www.asciiart.eu/animals/horses
